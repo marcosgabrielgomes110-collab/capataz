@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "capataz"
+version = "0.1.0"
+description = "Lib leve de agentes ReAct — Lego para LLMs"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+
+[project.scripts]
+capataz = "capataz.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["capataz", "capataz.*"]
