@@ -56,6 +56,9 @@ print(resposta)
 | [`tools`](tools.md) | Registro e execução de ferramentas |
 | [`skills`](skills.md) | Skills injetáveis via arquivos .md |
 | [`runner`](runner.md) | Interface principal `run()` |
+| [`session`](session.md) | Gerenciador de sessões multi-usuário |
+| [`channel`](channel.md) | Adaptadores de canal (CLI, Telegram) |
+| [`heartbeat`](heartbeat.md) | Daemon que acorda o agente em intervalos |
 
 ---
 
@@ -84,4 +87,17 @@ Memory.add(role, content)              # Adiciona mensagem
 Memory.get()                           # Últimas N mensagens
 Memory.last_n(n)                       # Últimas N específicas
 Memory.save() / .load() / .clear()     # Persistência
+
+SessionManager(persist_dir, ctx_size)  # Gerencia sessões
+SessionManager.get(session_id)         # Obtém/cria sessão
+SessionManager.delete(session_id)      # Remove sessão
+SessionManager.list_sessions()         # Lista sessões ativas
+
+CLIChannel(sessions)                   # Canal de terminal
+TelegramChannel(token, sessions)       # Canal Telegram Bot
+
+Heartbeat(interval, prompt, ...)       # Daemon autônomo
+Heartbeat.start(runner_fn)             # Inicia na thread
+Heartbeat.stop()                       # Para o heartbeat
+Heartbeat.is_running                   # Status
 ```

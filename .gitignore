@@ -12,6 +12,7 @@ venv/
 
 # Memória
 memoria_*.json
+session_*.json
 
 # IDE
 .vscode/

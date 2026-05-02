@@ -52,6 +52,9 @@ print(cp.run("bot", "Qual o clima em Fortaleza?"))
 | [`tools`](docs/tools.md) | Registro e execução de ferramentas |
 | [`skills`](docs/skills.md) | Skills injetáveis via arquivos `.md` |
 | [`runner`](docs/runner.md) | Interface principal `run()` |
+| [`session`](docs/session.md) | Gerenciador de sessões multi-usuário |
+| [`channel`](docs/channel.md) | Adaptadores de canal (CLI, Telegram) |
+| [`heartbeat`](docs/heartbeat.md) | Daemon que acorda o agente em intervalos |
 
 Documentação completa em [`docs/`](docs/index.md).
 
@@ -102,6 +105,47 @@ Mostra skills ativadas, cada turno da LLM e cada tool executada.
 
 ```python
 cp.run("bot", "oi", llm_fn=minha_llm_temporaria)  # não altera o global
+```
+
+### Sessões multi-usuário
+
+```python
+from capataz import SessionManager
+
+sessions = SessionManager(persist_dir="./data/", context_size=6)
+
+# Cada usuário tem seu histórico isolado
+mem = sessions.get("user_42")
+cp.run("bot", "Olá!", memory=mem)
+mem.save()
+```
+
+### Canais (Telegram, CLI)
+
+```python
+from capataz import CLIChannel, SessionManager
+
+sessions = SessionManager(persist_dir="./data/")
+cli = CLIChannel(sessions=sessions)
+
+for user_id, text in cli.start():
+    mem = sessions.get(user_id)
+    resposta = cp.run("bot", text, memory=mem)
+    cli.reply(user_id, resposta)
+    mem.save()
+```
+
+### Heartbeat — agente autônomo
+
+```python
+from capataz import Heartbeat
+
+hb = Heartbeat(
+    interval=60,               # a cada 60 segundos
+    prompt="Resuma o histórico recente.",
+    agent_name="monitor",
+)
+hb.start(cp.run)               # dispara cp.run() periodicamente
 ```
 
 ---
